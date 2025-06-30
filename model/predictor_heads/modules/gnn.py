@@ -110,9 +110,9 @@ class GNNHead(BaseModule, metaclass=ABCMeta):
             g.set_batch_num_edges(Tensor(graph.edges.edges_per_clip).int().to(device))
 
         else:
-            edge_offsets = torch.cumsum(Tensor([0] + graph.nodes.nodes_per_img[:-1]), 0).to(graph.edges.edge_flats.device)
+            edge_offsets = torch.cumsum(Tensor([0] + graph.nodes.nodes_per_img[:-1]), 0).to(graph.edges.edge_flats.device) #Compute offsets for each image in batch
             batch_edge_flats = graph.edges.edge_flats[:, 1:] + edge_offsets[graph.edges.edge_flats[:, 0]].view(-1, 1).int()
-            g = dgl.graph(batch_edge_flats.unbind(1), num_nodes=sum(graph.nodes.nodes_per_img))
+            g = dgl.graph(batch_edge_flats.unbind(1), num_nodes=sum(graph.nodes.nodes_per_img)) # Create DGL graph from edge flats
 
             # add attributes to graph
             for k, v in graph.nodes.items():
@@ -132,8 +132,12 @@ class GNNHead(BaseModule, metaclass=ABCMeta):
                 g.edata[k] = v
 
             # add in batch info
-            g.set_batch_num_nodes(Tensor(graph.nodes.nodes_per_img))
-            g.set_batch_num_edges(graph.edges.edges_per_img)
+            nodes_tensor = torch.tensor(graph.nodes.nodes_per_img, dtype=torch.int64).to(graph.edges.batch_index.device)
+            edges_per_clip = torch.tensor(graph.edges.edges_per_img, dtype=torch.int64).to(graph.edges.batch_index.device)
+            
+            g.set_batch_num_nodes(nodes_tensor)
+            g.set_batch_num_edges(edges_per_clip)
+            # g.to(graph.edges.edge_flats.device)
 
         # add self loops
         g = g.remove_self_loop()

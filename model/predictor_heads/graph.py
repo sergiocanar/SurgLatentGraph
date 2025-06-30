@@ -275,8 +275,8 @@ class GraphHead(BaseModule, metaclass=ABCMeta):
         graph.edges.batch_index = torch.arange(len(graph.edges.edges_per_img)).to(
                 graph.edges.edges_per_img.device).repeat_interleave(graph.edges.edges_per_img).view(-1, 1)
 
-        batch_edge_offset = torch.cat([torch.zeros(1),
-                dgl_g.batch_num_nodes()[:-1]], 0).cumsum(0).to(graph.edges.batch_index.device)
+        # breakpoint() # IGNORE
+        batch_edge_offset = torch.cat([torch.zeros(1).to(graph.edges.batch_index.device), dgl_g.batch_num_nodes()[:-1]], 0).cumsum(0).to(graph.edges.batch_index.device)
         edge_flats = torch.stack(dgl_g.edges(), 1) - \
                 batch_edge_offset[graph.edges.batch_index].view(-1, 1)
         graph.edges.edge_flats = torch.cat([graph.edges.batch_index, edge_flats], 1).long()
