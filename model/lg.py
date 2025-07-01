@@ -147,11 +147,16 @@ class LGDetector(BaseDetector):
             self.edge_semantic_feat_projector = build_mlp(edge_dim_list, batch_norm='batch')
 
     def loss(self, batch_inputs: Tensor, batch_data_samples: SampleList):
+        
+        #Batch inputs: [B, C, H, W]
+        #Batch data samples: List with B elements, each element is a BaseDataElement
+        
         if self.detector.training:
             losses = self.detector.loss(batch_inputs, batch_data_samples)
         else:
-            losses = {}
+            losses = {} #When training downstream heads, we don't want to use detector losses
 
+        #breakpoint()
         # extract LG (gets non-differentiable predicted detections, and differentiable predicted graph)
         feats, graph, results, gt_edges, losses = self.extract_lg(batch_inputs,
                 batch_data_samples, losses=losses)
@@ -182,6 +187,8 @@ class LGDetector(BaseDetector):
                 print(e)
                 raise NotImplementedError("Must have graph head in order to do downstream prediction")
 
+        # breakpoint()
+        
         return losses
 
     def predict(self, batch_inputs: Tensor, batch_data_samples: SampleList,
@@ -305,10 +312,12 @@ class LGDetector(BaseDetector):
             force_perturb: bool = False, losses: dict = None,
             clip_size: int = -1) -> Tuple[BaseDataElement]:
 
+        
         # run detector to get detections
         with torch.no_grad():
             results = self.detector.predict(batch_inputs, batch_data_samples, rescale=False)
 
+        # breakpoint()
         # get bb and fpn features
         feats = self.extract_feat(batch_inputs, results, force_perturb, clip_size)
 
@@ -347,6 +356,8 @@ class LGDetector(BaseDetector):
             graph = None
             gt_edges = None
 
+        # breakpoint()
+
         return feats, graph, results, gt_edges, losses
 
     def detach_results(self, results: SampleList) -> SampleList:
@@ -363,6 +374,7 @@ class LGDetector(BaseDetector):
         # load pred/gt dense labels
         use_masks = 'masks' in results[0].pred_instances
         if self.use_gt_dets and self.training: # only use gt dets when training
+            # breakpoint()
             boxes = [r.gt_instances.bboxes.to(batch_inputs.device) \
                     if (r.is_det_keyframe and len(r.gt_instances) > 0) \
                     else Tensor([]).to(batch_inputs.device) if r.is_det_keyframe \
@@ -379,7 +391,7 @@ class LGDetector(BaseDetector):
             if use_masks:
                 masks = [r.gt_instances.masks.to(batch_inputs.device) \
                         if (r.is_det_keyframe and len(r.gt_instances) > 0) \
-                        else torch.zeros([0, *r.ori_shape]).to(device) \
+                        else torch.zeros([0, *r.ori_shape]).to(batch_inputs.device) \
                         if r.is_det_keyframe else r.pred_instances.masks for r in results]
 
         else:
@@ -397,13 +409,13 @@ class LGDetector(BaseDetector):
         # run bbox feat extractor and add instance feats to feats
         if self.roi_extractor is not None:
             if self.trainable_backbone is not None:
-                backbone = self.trainable_backbone.backbone
-                neck = self.trainable_backbone.neck
+                backbone = self.trainable_backbone.backbone #ResNet
+                neck = self.trainable_backbone.neck #FPN 
             else:
                 backbone = self.detector.backbone
                 neck = self.detector.neck if self.detector.with_neck else torch.nn.Identity()
 
-            bb_feats = backbone(batch_inputs)
+            bb_feats = backbone(batch_inputs) #[B, ft:256, 120, 214]
             neck_feats = neck(bb_feats)
 
             feats.bb_feats = bb_feats
@@ -461,6 +473,8 @@ class LGDetector(BaseDetector):
                     feats.bb_feats, feats.neck_feats, feats.instance_feats = \
                             self.detector.get_queries(batch_inputs, results)
 
+        # breakpoint()
+        
         return feats
 
     def compute_semantic_feat(self, results: SampleList, feats: BaseDataElement,
