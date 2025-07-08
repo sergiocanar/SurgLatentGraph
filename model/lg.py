@@ -38,21 +38,34 @@ class LGDetector(BaseDetector):
         reconstruction_img_stats (ConfigType): reconstructed image mean and std
     """
 
-    def __init__(self, detector: ConfigType, num_classes: int, viz_feat_size: int,
-            semantic_feat_size: int, sem_feat_hidden_dim: int = 2048,
-            semantic_feat_projector_layers: int = 3, perturb_factor: float = 0.0,
-            use_pred_boxes_recon_loss: bool = False, reconstruction_head: ConfigType = None,
-            reconstruction_loss: ConfigType = None, reconstruction_img_stats: ConfigType = None,
-            graph_head: ConfigType = None, ds_head: ConfigType = None,
-            roi_extractor: ConfigType = None, use_gt_dets: bool = False,
-            trainable_detector_cfg: OptConfigType = None,
-            trainable_backbone_cfg: OptConfigType = None, force_train_graph_head: bool = False,
-            sem_feat_use_class_logits: bool = True, sem_feat_use_bboxes: bool = True,
-            sem_feat_use_masks: bool = True, mask_polygon_num_points: int = 16,
-            mask_augment: bool = True, force_encode_semantics: bool = False,
-            trainable_neck_cfg: OptConfigType = None, **kwargs):
+    def __init__(self, detector: ConfigType, #Given from lg_mask_rcnn.py and $MMDETECTION/configs/_base_/models/mask-rcnn_r50_fpn.py
+                num_classes: int, # 6: Responds to object classes in Endoscapes2023
+                viz_feat_size: int, #256
+                semantic_feat_size: int, #512 
+                sem_feat_hidden_dim: int = 2048,
+                semantic_feat_projector_layers: int = 3,
+                perturb_factor: float = 0.0,
+                use_pred_boxes_recon_loss: bool = False, 
+                reconstruction_head: ConfigType = None,
+                reconstruction_loss: ConfigType = None,
+                reconstruction_img_stats: ConfigType = None,
+                graph_head: ConfigType = None,
+                ds_head: ConfigType = None,
+                roi_extractor: ConfigType = None, 
+                use_gt_dets: bool = False,
+                trainable_detector_cfg: OptConfigType = None,
+                trainable_backbone_cfg: OptConfigType = None, 
+                force_train_graph_head: bool = False,
+                sem_feat_use_class_logits: bool = True, 
+                sem_feat_use_bboxes: bool = True,
+                sem_feat_use_masks: bool = True, 
+                mask_polygon_num_points: int = 16,
+                mask_augment: bool = True, 
+                force_encode_semantics: bool = False,
+                trainable_neck_cfg: OptConfigType = None, **kwargs):
         super().__init__(**kwargs)
-
+        
+        #breakpoint()
         self.num_classes = num_classes
         self.detector = MODELS.build(detector)
         self.roi_extractor = MODELS.build(roi_extractor) if roi_extractor is not None else None
@@ -153,6 +166,7 @@ class LGDetector(BaseDetector):
         
         if self.detector.training:
             losses = self.detector.loss(batch_inputs, batch_data_samples)
+            #breakpoint()
         else:
             losses = {} #When training downstream heads, we don't want to use detector losses
 
