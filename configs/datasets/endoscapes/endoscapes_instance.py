@@ -42,10 +42,10 @@ train_pipeline = [
             type='RandomFlip',
             prob=0.5,
         ),
-        #dict(
-        #    type='RandAugment',
-        #    aug_space=rand_aug_surg,
-        #),
+        dict(
+           type='RandAugment',
+           aug_space=rand_aug_surg,
+        ),
         dict(
             type='Color',
             min_mag = 0.6,

@@ -65,7 +65,6 @@ class LGDetector(BaseDetector):
                 trainable_neck_cfg: OptConfigType = None, **kwargs):
         super().__init__(**kwargs)
         
-        #breakpoint()
         self.num_classes = num_classes
         self.detector = MODELS.build(detector)
         self.roi_extractor = MODELS.build(roi_extractor) if roi_extractor is not None else None
@@ -331,7 +330,7 @@ class LGDetector(BaseDetector):
         with torch.no_grad():
             results = self.detector.predict(batch_inputs, batch_data_samples, rescale=False)
 
-        # breakpoint()
+        #breakpoint()
         # get bb and fpn features
         feats = self.extract_feat(batch_inputs, results, force_perturb, clip_size)
 
