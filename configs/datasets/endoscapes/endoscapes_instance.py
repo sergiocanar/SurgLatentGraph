@@ -35,7 +35,7 @@ train_pipeline = [
         ),
         dict(
             type='Resize',
-            scale=(854, 480),
+            scale=(224, 399),
             keep_ratio=True,
         ),
         dict(
@@ -67,7 +67,7 @@ eval_pipeline = [
         dict(type='LoadImageFromFile'),
         dict(
             type='Resize',
-            scale=(854, 480),
+            scale=(224, 399),
             keep_ratio=True,
         ),
         dict(type='LoadAnnotationsWithDS',

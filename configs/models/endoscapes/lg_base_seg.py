@@ -79,5 +79,5 @@ param_scheduler = [
 
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=60,
+    max_epochs=20,
     val_interval=3)
