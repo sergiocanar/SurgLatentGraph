@@ -83,14 +83,14 @@ lg_model.force_train_graph_head = True
 
 # dataset
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=64,
     dataset=dict(
         ann_file='train/annotation_ds_coco.json',
         filter_cfg=dict(filter_empty_gt=False),
     ),
 )
 train_eval_dataloader = dict(
-    batch_size=32,
+    batch_size=64,
     num_workers=2,
     dataset=dict(
         ann_file='train/annotation_ds_coco.json',
@@ -98,13 +98,13 @@ train_eval_dataloader = dict(
     ),
 )
 val_dataloader = dict(
-    batch_size=32,
+    batch_size=64,
     dataset=dict(
         ann_file='val/annotation_ds_coco.json',
     ),
 )
 test_dataloader = dict(
-    batch_size=32,
+    batch_size=64,
     dataset=dict(
         ann_file='test/annotation_ds_coco.json',
     ),
