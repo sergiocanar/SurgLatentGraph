@@ -30,7 +30,7 @@ class LatentGraphVisualizer(DetLocalVisualizer):
 
         if self.draw:
             viz_dir = os.path.join(results_dir, '{}_preds'.format(dataset), data_prefix)
-
+            
             self.det_viz_dir = os.path.join(viz_dir, 'detections')
             if not os.path.exists(self.det_viz_dir):
                 os.makedirs(self.det_viz_dir)
@@ -155,7 +155,7 @@ class LatentGraphVisualizer(DetLocalVisualizer):
         if self.draw:
             # extract img prefix
             img_prefix = data_sample.img_path.split('/')[-1].replace('.jpg', '')
-
+        
             # draw detections
             super().add_datasample(name, image, data_sample,
                     out_file=os.path.join(self.det_viz_dir, img_prefix + '.jpg'), **kwargs)
@@ -279,7 +279,7 @@ class LatentGraphVisualizer(DetLocalVisualizer):
         nx.draw_networkx_labels(pred_graph, pred_pos, pred_labels, font_size=44,
                 font_color='black', font_family='calibri.ttf')
         plt.axis('off')
-
+        
         # Save the pred graph
         plt.savefig(os.path.join(self.graph_viz_dir, 'pred', f'{img_prefix}.pdf'),
                 format='pdf', transparent=True)
