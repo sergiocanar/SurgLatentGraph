@@ -25,7 +25,7 @@ test_dataloader = dict(
 # metric
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages',
+    prefix='sages_og',
     data_root=_base_.data_root,
     data_prefix='val',
     ann_file=os.path.join(_base_.data_root, 'val/annotation_coco.json'),
@@ -37,7 +37,7 @@ val_evaluator = dict(
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages',
+    prefix='sages_og',
     data_root=_base_.data_root,
     data_prefix='test',
     ann_file=os.path.join(_base_.data_root, 'test/annotation_coco.json'),
@@ -52,7 +52,7 @@ test_evaluator = dict(
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='sages/segm_mAP'),
+    checkpoint=dict(save_best='sages_og/segm_mAP'),
 )
 
 # training schedule

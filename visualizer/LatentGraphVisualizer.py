@@ -46,7 +46,7 @@ class LatentGraphVisualizer(DetLocalVisualizer):
 
     def _init_graph_viz_info(self):
         # Define self.colors
-        cvs_datasets = ['endoscapes', 'wc', 'small_wc', 'italy', 'sages']
+        cvs_datasets = ['endoscapes', 'wc', 'small_wc', 'italy', 'sages', 'sages_og']
         c8k_datasets = ['c80_phase', 'cholecT50']
         if self.dataset in cvs_datasets:
             self.figsize = 15

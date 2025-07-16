@@ -113,30 +113,30 @@ test_dataloader = dict(
 # evaluators
 train_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages',
+    prefix='sages_og',
     data_root=_base_.data_root,
     data_prefix=_base_.train_eval_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'train/annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
     num_classes=3,
-    outfile_prefix='./results/sages_preds/train/lg',
+    outfile_prefix='./results/sages_og_preds/train/lg',
 )
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages',
+    prefix='sages_og',
     data_root=_base_.data_root,
     data_prefix=_base_.val_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'val/annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
     num_classes=3,
-    outfile_prefix='./results/sages_preds/val/lg',
+    outfile_prefix='./results/sages_og_preds/val/lg',
 )
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages',
+    prefix='sages_og',
     data_root=_base_.data_root,
     data_prefix=_base_.test_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'test/annotation_ds_coco.json'),
@@ -144,7 +144,7 @@ test_evaluator = dict(
     num_classes=3,
     #additional_metrics = ['reconstruction'],
     use_pred_boxes_recon=True,
-    outfile_prefix='./results/sages_preds/test/lg',
+    outfile_prefix='./results/sages_og_preds/test/lg',
 )
 
 # optimizer
@@ -164,25 +164,25 @@ auto_scale_lr = dict(enable=False)
 # hooks
 custom_hooks = [dict(type="CopyDetectorBackbone"), dict(type="FreezeHook")]
 default_hooks = dict(
-    checkpoint=dict(save_best='sages/ds_average_precision'),
+    checkpoint=dict(save_best='sages_og/ds_average_precision'),
     visualization=dict(
-        draw=True,                    # Enables drawing
+        draw=False,                    # Enables drawing
         interval=1,                   # Draw every image
         ),
 )
 
 # loading
-load_from = 'weights/sages/lg_base.pth'
+load_from = 'weights/sages_og/lg_base.pth'
 
 # visualization
 visualizer = dict(
     type='LatentGraphVisualizer',
     name='latent_graph_viz',
-    dataset='sages',
+    dataset='sages_og',
     detector='mask_rcnn',
     results_dir='results',         # will save in: results/endoscapes_preds/test/
     data_prefix='test',
-    draw=True,
-    save_graphs=True,              # set to True to save latent graphs
+    draw=False,
+    save_graphs=False,              # set to True to save latent graphs
     gt_graph_use_pred_instances=False,
 )

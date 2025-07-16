@@ -166,23 +166,23 @@ custom_hooks = [dict(type="CopyDetectorBackbone"), dict(type="FreezeHook")]
 default_hooks = dict(
     checkpoint=dict(save_best='sages/ds_average_precision'),
     visualization=dict(
-        draw=True,                    # Enables drawing
-        interval=1,                   # Draw every image
+        draw=False,                    # Enables drawing
+        # interval=1,                   # Draw every image
         ),
 )
 
 # loading
-load_from = 'weights/sages/lg_base.pth'
+load_from = 'weights/endoscapes/lg_base.pth'
 
 # visualization
-visualizer = dict(
-    type='LatentGraphVisualizer',
-    name='latent_graph_viz',
-    dataset='sages',
-    detector='mask_rcnn',
-    results_dir='results',         # will save in: results/endoscapes_preds/test/
-    data_prefix='test',
-    draw=True,
-    save_graphs=True,              # set to True to save latent graphs
-    gt_graph_use_pred_instances=False,
-)
+# visualizer = dict(
+#     type='LatentGraphVisualizer',
+#     name='latent_graph_viz',
+#     dataset='sages',
+#     detector='mask_rcnn',
+#     results_dir='results',         # will save in: results/endoscapes_preds/test/
+#     data_prefix='test',
+#     draw=False,
+#     save_graphs=False,              # set to True to save latent graphs
+#     gt_graph_use_pred_instances=False,
+# )
