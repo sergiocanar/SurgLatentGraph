@@ -2,7 +2,7 @@ import os
 
 # dataset, optimizer, and runtime cfgs
 _base_ = [
-    '../datasets/endoscapes/endoscapes_instance.py',
+    '../datasets/sages/sages_instance.py',
     os.path.expandvars('$MMDETECTION/configs/_base_/schedules/schedule_1x.py'),
     os.path.expandvars('$MMDETECTION/configs/_base_/default_runtime.py')
 ]
@@ -57,7 +57,7 @@ lg_model=dict(
 # metric
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=data_root,
     data_prefix=val_data_prefix,
     ann_file=os.path.join(data_root, 'val/annotation_coco.json'),
@@ -68,14 +68,14 @@ val_evaluator = dict(
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=data_root,
     data_prefix=test_data_prefix,
     ann_file=os.path.join(data_root, 'test/annotation_coco.json'),
     metric=['bbox'],
     use_pred_boxes_recon=False,
     num_classes=-1, # ds num classes
-    outfile_prefix='./results/endoscapes_preds/test/lg',
+    outfile_prefix='./results/sages_preds/test/lg',
     classwise=True,
 )
 
@@ -116,7 +116,7 @@ log_config = dict( # config to register logger hook
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='endoscapes/bbox_mAP'),
+    checkpoint=dict(save_best='sages/bbox_mAP'),
 )
 
 # visualizer

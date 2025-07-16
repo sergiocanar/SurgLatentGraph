@@ -35,7 +35,7 @@ train_pipeline = [
         ),
         dict(
             type='Resize',
-            scale=(854, 480),
+            scale=(399, 224),
             keep_ratio=True,
         ),
         dict(
@@ -43,8 +43,8 @@ train_pipeline = [
             prob=0.5,
         ),
         dict(
-           type='RandAugment',
-           aug_space=rand_aug_surg,
+            type='RandAugment',
+            aug_space=rand_aug_surg,
         ),
         dict(
             type='Color',
@@ -67,7 +67,7 @@ eval_pipeline = [
         dict(type='LoadImageFromFile'),
         dict(
             type='Resize',
-            scale=(854, 480),
+            scale=(399, 224),
             keep_ratio=True,
         ),
         dict(type='LoadAnnotationsWithDS',
@@ -81,7 +81,7 @@ eval_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=8,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,
@@ -105,7 +105,7 @@ train_eval_dataloader['dataset'].update(dict(
 )
 
 val_dataloader = dict(
-    batch_size=32,
+    batch_size=8,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,
@@ -115,7 +115,7 @@ val_dataloader = dict(
         pipeline=eval_pipeline))
 
 test_dataloader = dict(
-    batch_size=32,
+    batch_size=8,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,

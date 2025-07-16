@@ -2,7 +2,7 @@ _base_ = ['lg_ds_base.py']
 
 visualizer = dict(
     type='LatentGraphVisualizer',
-    dataset='endoscapes',
+    dataset='sages',
     save_graphs=True,
     draw=False,
 )

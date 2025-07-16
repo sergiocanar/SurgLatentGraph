@@ -5,30 +5,30 @@ _base_ = ['lg_base_box.py']
 # dataset
 train_dataloader = dict(
     dataset=dict(
-        ann_file='train_seg/annotation_coco.json',
-        data_prefix=dict(img='train_seg'),
+        ann_file='train/annotation_coco.json',
+        data_prefix=dict(img='train'),
     )
 )
 val_dataloader = dict(
     dataset=dict(
-        ann_file='val_seg/annotation_coco.json',
-        data_prefix=dict(img='val_seg'),
+        ann_file='val/annotation_coco.json',
+        data_prefix=dict(img='val'),
     )
 )
 test_dataloader = dict(
     dataset=dict(
-        ann_file='test_seg/annotation_coco.json',
-        data_prefix=dict(img='test_seg'),
+        ann_file='test/annotation_coco.json',
+        data_prefix=dict(img='test'),
     )
 )
 
 # metric
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=_base_.data_root,
-    data_prefix='val_seg',
-    ann_file=os.path.join(_base_.data_root, 'val_seg/annotation_coco.json'),
+    data_prefix='val',
+    ann_file=os.path.join(_base_.data_root, 'val/annotation_coco.json'),
     metric=['bbox', 'segm'],
     additional_metrics=['reconstruction'],
     use_pred_boxes_recon=False,
@@ -37,10 +37,10 @@ val_evaluator = dict(
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=_base_.data_root,
-    data_prefix='test_seg',
-    ann_file=os.path.join(_base_.data_root, 'test_seg/annotation_coco.json'),
+    data_prefix='test',
+    ann_file=os.path.join(_base_.data_root, 'test/annotation_coco.json'),
     #data_prefix='test',
     #ann_file=os.path.join(_base_.data_root, 'test/annotation_coco.json'),
     metric=['bbox', 'segm'],
@@ -52,7 +52,7 @@ test_evaluator = dict(
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='endoscapes/segm_mAP'),
+    checkpoint=dict(save_best='sages/segm_mAP'),
 )
 
 # training schedule

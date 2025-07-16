@@ -113,30 +113,30 @@ test_dataloader = dict(
 # evaluators
 train_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=_base_.data_root,
     data_prefix=_base_.train_eval_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'train/annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
     num_classes=3,
-    outfile_prefix='./results/endoscapes_preds/train/lg',
+    outfile_prefix='./results/sages_preds/train/lg',
 )
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=_base_.data_root,
     data_prefix=_base_.val_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'val/annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
     num_classes=3,
-    outfile_prefix='./results/endoscapes_preds/val/lg',
+    outfile_prefix='./results/sages_preds/val/lg',
 )
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='endoscapes',
+    prefix='sages',
     data_root=_base_.data_root,
     data_prefix=_base_.test_dataloader.dataset.data_prefix.img,
     ann_file=os.path.join(_base_.data_root, 'test/annotation_ds_coco.json'),
@@ -144,7 +144,7 @@ test_evaluator = dict(
     num_classes=3,
     #additional_metrics = ['reconstruction'],
     use_pred_boxes_recon=True,
-    outfile_prefix='./results/endoscapes_preds/test/lg',
+    outfile_prefix='./results/sages_preds/test/lg',
 )
 
 # optimizer
@@ -164,17 +164,17 @@ auto_scale_lr = dict(enable=False)
 # hooks
 custom_hooks = [dict(type="CopyDetectorBackbone"), dict(type="FreezeHook")]
 default_hooks = dict(
-    checkpoint=dict(save_best='endoscapes/ds_average_precision'),
+    checkpoint=dict(save_best='sages/ds_average_precision'),
     visualization=dict(draw=False),
 )
 
 # loading
-load_from = 'weights/endoscapes/lg_base.pth'
+load_from = 'weights/sages/lg_base.pth'
 
 # visualization
 visualizer = dict(
     type='LatentGraphVisualizer',
-    dataset='endoscapes',
+    dataset='sages',
     data_prefix='test',
     draw=True,
 )
