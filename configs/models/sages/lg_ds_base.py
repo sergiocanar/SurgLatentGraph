@@ -106,7 +106,7 @@ val_dataloader = dict(
 test_dataloader = dict(
     batch_size=64,
     dataset=dict(
-        ann_file='test/annotation_ds_coco.json',
+        ann_file='test/annotation_ds_coco_og.json',
     ),
 )
 
@@ -139,7 +139,7 @@ test_evaluator = dict(
     prefix='sages',
     data_root=_base_.data_root,
     data_prefix=_base_.test_dataloader.dataset.data_prefix.img,
-    ann_file=os.path.join(_base_.data_root, 'test/annotation_ds_coco.json'),
+    ann_file=os.path.join(_base_.data_root, 'test/annotation_ds_coco_og.json'),
     metric=[],
     num_classes=3,
     #additional_metrics = ['reconstruction'],
@@ -172,7 +172,7 @@ default_hooks = dict(
 )
 
 # loading
-load_from = 'weights/endoscapes/lg_base.pth'
+load_from = 'weights/sages_og/lg_base.pth'
 
 # visualization
 # visualizer = dict(
