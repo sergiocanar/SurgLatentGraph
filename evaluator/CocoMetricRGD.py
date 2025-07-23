@@ -431,7 +431,7 @@ class CocoMetricRGD(CocoMetric):
                 final_pred = result_dict['ds'].sigmoid().detach().cpu().numpy()
                 
                 #Convert to integer
-                final_pred = (final_pred > 0.5).astype(int)
+                # final_pred = (final_pred > 0.5).astype(int)
                 
                 results_json[final_path] = final_pred.tolist()
                 
