@@ -13,6 +13,7 @@ from torchmetrics import AveragePrecision as AP, Precision, Recall, F1Score
 import os
 import io
 import cv2
+import json
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -70,6 +71,7 @@ class CocoMetricRGD(CocoMetric):
                 for data_sample in data_samples:
                     result = dict()
                     result['img_id'] = data_sample['img_id']
+                    result['img_path'] = data_sample['img_path']
                     if 'pred_instances' in data_sample:
                         result['bboxes'] = data_sample['pred_instances']['bboxes']
                         result['labels'] = data_sample['pred_instances']['labels']
@@ -84,6 +86,7 @@ class CocoMetricRGD(CocoMetric):
                         gt['height'] = data_sample['img_shape'][0]
 
                     gt['img_id'] = data_sample['img_id']
+                    gt['img_path'] = data_sample['img_path']
 
                     # add vid id
                     if 'video_id' in data_sample:
@@ -139,9 +142,10 @@ class CocoMetricRGD(CocoMetric):
         # load data
         img_paths = self._coco_api.load_imgs(self.img_ids)
         gts, preds = list(map(list, zip(*results)))
-
+        
         if self.outfile_prefix is not None:
             result_files = self.results2json(preds, self.outfile_prefix, gts=gts)
+            # breakpoint()
 
         # compute reconstruction metrics
         if 'reconstruction' in preds[0] and 'reconstruction' in self.additional_metrics:
@@ -270,7 +274,7 @@ class CocoMetricRGD(CocoMetric):
 
                     else:
                         ds_ap = torch_ap(ds_preds, ds_gt)
-
+                        # breakpoint()
                         # log overall
                         logger_info.append(f'ds_average_precision: {torch.nanmean(ds_ap):.4f}')
                         eval_results['ds_average_precision'] = torch.nanmean(ds_ap)
@@ -280,6 +284,7 @@ class CocoMetricRGD(CocoMetric):
                             for ind, i in enumerate(ds_ap):
                                 logger_info.append(f'ds_average_precision_C{ind+1}: {i:.4f}')
                                 eval_results['ds_average_precision_C{}'.format(ind+1)] = i
+                                # breakpoint()
 
                 elif self.task_type == 'multiclass':
                     # get preds and gt
@@ -374,6 +379,7 @@ class CocoMetricRGD(CocoMetric):
 
         if len(self.metrics) > 0:
             result_files = super().results2json(results, outfile_prefix)
+            # breakpoint()
         else:
             result_files = {}
 
@@ -400,7 +406,42 @@ class CocoMetricRGD(CocoMetric):
         if 'ds' in results[0]:
             # save ds preds
             pred_ds = torch.stack([r['ds'] for r in results]).sigmoid()
-
+            
+            results_json = {}
+            gt_json = {}
+            
+            for gt_dict in gts:
+                video_id = gt_dict['video_id']
+                img_path = gt_dict['img_path']
+                frame_name = img_path.split('/')[-1]
+                frame_name = frame_name.split('_')[-1]
+                final_path = f'{video_id}/{frame_name}'
+                final_label = gt_dict['ds']
+                
+                gt_json[final_path] = final_label.tolist()
+            
+            for result_dict in results:
+                video_id = result_dict['video_id']
+                img_path = result_dict['img_path']
+                frame_name = img_path.split('/')[-1]
+                frame_name = frame_name.split('_')[-1]
+                                
+                final_path = f'{video_id}/{frame_name}'
+                
+                final_pred = result_dict['ds'].sigmoid().detach().cpu().numpy()
+                
+                #Convert to integer
+                final_pred = (final_pred > 0.5).astype(int)
+                
+                results_json[final_path] = final_pred.tolist()
+                
+                
+            with open(os.path.join(outfile_prefix, 'ds_preds.json'), 'w') as f:
+                json.dump(results_json, f, indent=4)
+                
+            with open(os.path.join(outfile_prefix, 'ds_gts.json'), 'w') as f:
+                json.dump(gt_json, f, indent=4)
+            
             if not os.path.exists(outfile_prefix):
                 os.makedirs(outfile_prefix)
 
@@ -409,6 +450,7 @@ class CocoMetricRGD(CocoMetric):
                 np.save(pred_outname, pred_ds.detach().cpu().numpy())
             else:
                 pred_outname = os.path.join(outfile_prefix, 'pred_ds.txt')
+                # breakpoint()
                 np.savetxt(pred_outname, pred_ds.detach().cpu().numpy())
 
             if gts is not None:
