@@ -25,7 +25,7 @@ test_dataloader = dict(
 # metric
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages_og',
+    prefix='sages_og_fold1',
     data_root=_base_.data_root,
     data_prefix='val',
     ann_file=os.path.join(_base_.data_root, 'val/annotation_coco.json'),
@@ -37,7 +37,7 @@ val_evaluator = dict(
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sages_og',
+    prefix='sages_og_fold1',
     data_root=_base_.data_root,
     data_prefix='test',
     ann_file=os.path.join(_base_.data_root, 'test/annotation_coco.json'),
