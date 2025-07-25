@@ -47,12 +47,12 @@ test_evaluator = dict(
     additional_metrics=['reconstruction'],
     use_pred_boxes_recon=False,
     num_classes=-1, # ds num classes
-    outfile_prefix='./results/endoscapes_preds/test/lg',
+    outfile_prefix='./results/sagesf1_preds/test/lg',
     classwise=True,
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='sages_og/segm_mAP'),
+    checkpoint=dict(save_best='sages_og_fold1/segm_mAP'),
 )
 
 # training schedule

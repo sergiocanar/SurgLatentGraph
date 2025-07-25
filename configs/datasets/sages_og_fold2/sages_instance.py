@@ -6,7 +6,7 @@ custom_imports = dict(imports=['datasets.custom_loading'], allow_failed_imports=
 
 # Modify dataset related settings
 
-data_root='data/mmdet_datasets/sages_og'
+data_root='data/mmdet_datasets/sages_og/fold2'
 metainfo = {
     'classes': ('cystic_plate', 'calot_triangle', 'cystic_artery', 'cystic_duct',
         'gallbladder', 'tool'),
@@ -81,7 +81,7 @@ eval_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=8,
+    batch_size=32,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,
@@ -105,7 +105,7 @@ train_eval_dataloader['dataset'].update(dict(
 )
 
 val_dataloader = dict(
-    batch_size=8,
+    batch_size=32,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,
@@ -115,7 +115,7 @@ val_dataloader = dict(
         pipeline=eval_pipeline))
 
 test_dataloader = dict(
-    batch_size=8,
+    batch_size=32,
     dataset=dict(
         type='CocoDatasetWithDS',
         data_root=data_root,
