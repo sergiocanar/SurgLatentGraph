@@ -75,7 +75,7 @@ test_evaluator = dict(
     metric=['bbox'],
     use_pred_boxes_recon=False,
     num_classes=-1, # ds num classes
-    outfile_prefix='./results/sagesf1_preds/test/lg',
+    outfile_prefix='./results/sagesf1_c1_preds/test/lg',
     classwise=True,
 )
 
@@ -116,7 +116,7 @@ log_config = dict( # config to register logger hook
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='sagesf1/bbox_mAP'),
+    checkpoint=dict(save_best='sagesf1_c1/bbox_mAP'),
 )
 
 # visualizer

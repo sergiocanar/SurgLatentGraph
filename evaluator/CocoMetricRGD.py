@@ -27,6 +27,7 @@ class CocoMetricRGD(CocoMetric):
             num_classes: int, additional_metrics: List = [], clip_eval: bool = False,
             pred_per_frame: bool = False, save_lg: bool = False, num_thresholds: int = 10,
             task_type: str = 'multilabel', agg: str = 'frame', ds_per_class: bool = True,
+            criteria: int = 0,
             save_reconstructions: bool = False, **kwargs):
 
         super().__init__(**kwargs)
@@ -44,6 +45,7 @@ class CocoMetricRGD(CocoMetric):
         self.num_classes = num_classes
         self.num_thresholds = num_thresholds
         self.save_reconstructions = save_reconstructions
+        self.criteria = criteria
 
         # fonts
         try:
@@ -366,6 +368,22 @@ class CocoMetricRGD(CocoMetric):
                         eval_results['ds_precision'] = torch.nanmean(ds_prec)
                         eval_results['ds_recall'] = torch.nanmean(ds_rec)
                         eval_results['ds_f1'] = torch.nanmean(ds_f1)
+
+                elif self.task_type == 'binary':
+                    torch_ap = AP(task='binary', num_classes=self.num_classes, average='none')
+                    ds_preds = torch.stack([p['ds'] for p in preds]).sigmoid()
+                    ds_gt = torch.stack([Tensor(g['ds']).round() for g in gts]).long()
+                    ds_ap = torch_ap(ds_preds, ds_gt)
+                    logger_info.append(f'ds_average_precision: {torch.nanmean(ds_ap):.4f}')
+                    eval_results['ds_average_precision'] = torch.nanmean(ds_ap)
+                    logger_info.append(f'ds_average_precision_C{self.criteria}: {ds_ap:.4f}')
+
+                    if self.ds_per_class:
+                            # log component-wise
+                        for ind, i in enumerate(ds_ap):
+                            logger_info.append(f'ds_average_precision_C{ind+1}: {i:.4f}')
+                            eval_results['ds_average_precision_C{}'.format(ind+1)] = i
+                            # breakpoint()
 
                 else:
                     raise NotImplementedError("Metrics not defined for task type {}".format(self.task_type))
