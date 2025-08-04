@@ -452,8 +452,7 @@ class CocoMetricRGD(CocoMetric):
                 # final_pred = (final_pred > 0.5).astype(int)
                 
                 results_json[final_path] = final_pred.tolist()
-                
-                
+                              
             with open(os.path.join(outfile_prefix, 'ds_preds.json'), 'w') as f:
                 json.dump(results_json, f, indent=4)
                 

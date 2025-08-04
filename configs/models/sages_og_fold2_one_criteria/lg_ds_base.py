@@ -1,5 +1,4 @@
 import os
-import copy
 
 _base_ = ['lg_base_box.py']
 
@@ -16,7 +15,7 @@ lg_model = _base_.lg_model
 lg_model.perturb_factor = 0.125
 lg_model.ds_head = dict(
     type='DSHead',
-    num_classes=3,
+    num_classes=1,
     gnn_cfg=dict(
         type='GNNHead',
         num_layers=3,
@@ -37,7 +36,7 @@ lg_model.ds_head = dict(
     loss=dict(
         type='CrossEntropyLoss',
         use_sigmoid=True,
-        class_weight=[3.19852941, 4.46153846, 2.79518072],
+        # class_weight=[3.19852941, 4.46153846, 2.79518072],
     ),
     loss_weight=1.0,
     num_predictor_layers=3,
@@ -85,7 +84,7 @@ lg_model.force_train_graph_head = True
 train_dataloader = dict(
     batch_size=64,
     dataset=dict(
-        ann_file='train/annotation_ds_coco.json',
+        ann_file='train/c1_2_annotation_ds_coco.json',
         filter_cfg=dict(filter_empty_gt=False),
     ),
 )
@@ -93,58 +92,67 @@ train_eval_dataloader = dict(
     batch_size=64,
     num_workers=2,
     dataset=dict(
-        ann_file='train/annotation_ds_coco.json',
+        ann_file='train/c1_2_annotation_ds_coco.json',
         test_mode=True,
     ),
 )
 val_dataloader = dict(
     batch_size=64,
     dataset=dict(
-        ann_file='val/annotation_ds_coco.json',
+        ann_file='val/c1_2_annotation_ds_coco.json',
     ),
 )
 test_dataloader = dict(
     batch_size=64,
     dataset=dict(
-        ann_file='test/annotation_ds_coco.json',
+        ann_file='test/c1_2_annotation_ds_coco.json',
     ),
 )
 
 # evaluators
 train_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sagesf2',
+    prefix='sagesf2_c1',
     data_root=_base_.data_root,
     data_prefix=_base_.train_eval_dataloader.dataset.data_prefix.img,
-    ann_file=os.path.join(_base_.data_root, 'train/annotation_ds_coco.json'),
+    ann_file=os.path.join(_base_.data_root, 'train/c1_2_annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
-    num_classes=3,
-    outfile_prefix='./results/sages_og_fold2_preds/train/lg',
+    task_type='binary',
+    num_classes=1,
+    ds_per_class=False,
+    criteria=1,
+    outfile_prefix='./results/sages_og_fold2_c1_preds/train/lg',
 )
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sagesf2',
+    prefix='sagesf2_c1',
     data_root=_base_.data_root,
     data_prefix=_base_.val_dataloader.dataset.data_prefix.img,
-    ann_file=os.path.join(_base_.data_root, 'val/annotation_ds_coco.json'),
+    ann_file=os.path.join(_base_.data_root, 'val/c1_2_annotation_ds_coco.json'),
     use_pred_boxes_recon=True,
     metric=[],
-    num_classes=3,
-    outfile_prefix='./results/sages_og_fold2_preds/val/lg',
+    task_type='binary',
+    ds_per_class=False,
+    criteria=1,
+    num_classes=1,
+    outfile_prefix='./results/sages_og_fold2_c1_preds/val/lg',
 )
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sagesf2',
+    prefix='sagesf2_c1',
     data_root=_base_.data_root,
     data_prefix=_base_.test_dataloader.dataset.data_prefix.img,
-    ann_file=os.path.join(_base_.data_root, 'test/annotation_ds_coco.json'),
+    ann_file=os.path.join(_base_.data_root, 'test/c1_2_annotation_ds_coco.json'),
     metric=[],
-    num_classes=3,
+    task_type='binary',
+    num_classes=1,
+    ds_per_class=False,
+    criteria=1,
     #additional_metrics = ['reconstruction'],
     use_pred_boxes_recon=True,
-    outfile_prefix='./results/sages_og_fold2_preds/test/lg',
+    outfile_prefix='./results/sages_og_fold2_c1_preds/test/lg',
 )
 
 # optimizer
@@ -164,7 +172,7 @@ auto_scale_lr = dict(enable=False)
 # hooks
 custom_hooks = [dict(type="CopyDetectorBackbone"), dict(type="FreezeHook")]
 default_hooks = dict(
-    checkpoint=dict(save_best='sagesf2/ds_average_precision'),
+    checkpoint=dict(save_best='sagesf2_c1/ds_average_precision'),
     visualization=dict(
         draw=False,                    # Enables drawing
         interval=1,                   # Draw every image

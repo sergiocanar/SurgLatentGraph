@@ -57,7 +57,7 @@ lg_model=dict(
 # metric
 val_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sagesf2',
+    prefix='sagesf2_c1',
     data_root=data_root,
     data_prefix=val_data_prefix,
     ann_file=os.path.join(data_root, 'val/annotation_coco.json'),
@@ -68,14 +68,14 @@ val_evaluator = dict(
 
 test_evaluator = dict(
     type='CocoMetricRGD',
-    prefix='sagesf2',
+    prefix='sagesf2_c1',
     data_root=data_root,
     data_prefix=test_data_prefix,
     ann_file=os.path.join(data_root, 'test/annotation_coco.json'),
     metric=['bbox'],
     use_pred_boxes_recon=False,
     num_classes=-1, # ds num classes
-    outfile_prefix='./results/sages_og_preds/test/lg',
+    outfile_prefix='./results/sages_og_preds_f2_c1/test/lg',
     classwise=True,
 )
 
@@ -116,7 +116,7 @@ log_config = dict( # config to register logger hook
 )
 
 default_hooks = dict(
-    checkpoint=dict(save_best='sages_og_fold2/bbox_mAP'),
+    checkpoint=dict(save_best='sages_og_fold2_c1    /bbox_mAP'),
 )
 
 # visualizer
